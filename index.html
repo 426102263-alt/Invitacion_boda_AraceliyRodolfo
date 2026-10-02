@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Araceli & Rodolfo · Invitación de boda</title>
+<link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fondo: #fbfbf8;
+    --salvia: #d7a7b0;;
+    --salvia-osc: #9a6a6a;
+    --tinta: #805152;
+    --papel: #eeeaec;
+    --novia: #c08a90;
+    --novio: #5b7690;
+    --linea: #d8b3ca;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: var(--fondo); color: var(--tinta); font-family: "Cormorant Garamond", Georgia, serif; font-size: 1.15rem; line-height: 1.5; text-align: center; }
+  h1, h2 { font-family: "Pinyon Script", "Brush Script MT", cursive; font-weight: 400; line-height: 1.1; }
+  h2 { font-size: 3rem; margin-bottom: 1rem; color: var(--salvia-osc); }
+  section { max-width: 480px; margin: 0 auto; padding: 3rem 1.5rem; }
+  :focus-visible { outline: 2px solid var(--salvia-osc); outline-offset: 3px; }
+
+  /* ---------- Portada con sobre ---------- */
+  .portada { min-height: 100vh; padding-top: 2.5rem; }
+  .portada h1 { font-size: clamp(3rem, 14vw, 4.2rem); }
+  .portada .fecha { letter-spacing: .15em; }
+  .sobre { position: relative; display: block; width: 320px; max-width: 100%; height: 215px; margin: 170px auto 0; border: 0; background: none; cursor: pointer; padding: 0; perspective: 900px; }
+  .sobre > span { position: absolute; display: block; }
+  .s-fondo { inset: 0; background: var(--salvia); z-index: 1; }
+  .s-lado { inset: 0; z-index: 3; }
+  .s-izq { background: #ddb5be; clip-path: polygon(0 0, 52% 54%, 0 100%); }
+  .s-der { background: #ddb5be; clip-path: polygon(100% 0, 48% 54%, 100% 100%); }
+  .s-base { inset: 0; background: #e7c4cb; clip-path: polygon(0 100%, 50% 46%, 100% 100%); z-index: 3; }
+  .s-tapa { left: 0; right: 0; top: 0; height: 58%; background: #d7a7b0; clip-path: polygon(0 0, 100% 0, 50% 100%); transform-origin: top; z-index: 4; transition: transform .7s ease, z-index 0s .35s; }
+  .s-foto { left: 40px; right: 40px; top: 12px; height: 190px; background: #fff; padding: 8px 8px 0; box-shadow: 0 2px 8px rgba(0,0,0,.2); z-index: 2; transition: transform .9s ease .5s; }
+  .s-foto img { width: 100%; height: 150px; object-fit: cover; object-position: 50% 28%; display: block; }
+  .abierto .s-tapa { transform: rotateX(180deg); z-index: 1; }
+  .abierto .s-foto { transform: translateY(-125px) rotate(-3deg); }
+  .flores { position: absolute; left: -26px; bottom: -34px; width: 150px; z-index: 5; pointer-events: none; }
+  .indicacion { margin-top: 3rem; font-style: italic; }
+  .pase { font-size: 1rem; color: var(--salvia-osc); }
+
+  /* ---------- Invitación ---------- */
+  #invitacion { display: none; }
+  #invitacion.visible { display: block; animation: entrada 1s ease both; }
+  @keyframes entrada { from { opacity: 0; } to { opacity: 1; } }
+  .cita { font-style: italic; }
+  .monograma { font-family: "Pinyon Script", cursive; font-size: 6rem; color: var(--salvia-osc); line-height: 1; margin-top: 1.5rem; }
+  .reproductor { display: flex; align-items: center; justify-content: center; gap: .8rem; }
+  .reproductor button { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--salvia-osc); background: none; color: var(--salvia-osc); font-size: 1rem; cursor: pointer; }
+
+  /* papel rasgado */
+  .papel { background: var(--papel); padding: 2rem 1.5rem; margin: 1.5rem 0; clip-path: polygon(0 3%,6% 0,14% 2%,22% 0,31% 2%,40% 0,50% 2%,60% 0,70% 2%,80% 0,90% 2%,100% 0,100% 97%,92% 100%,83% 98%,72% 100%,62% 98%,50% 100%,38% 98%,27% 100%,15% 98%,6% 100%,0 97%); }
+  .papel h3 { font-weight: 600; margin-bottom: .6rem; }
+  .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 1rem; }
+  .dos b { display: block; }
+
+  /* cuenta regresiva */
+  .cuenta { display: flex; justify-content: center; gap: .6rem; font-size: 2.4rem; color: var(--tinta); }
+  .cuenta div small { display: block; font-size: .7rem; letter-spacing: .1em; }
+
+  /* polaroid */
+  .polaroid { background: #fff; padding: 10px 10px 48px; width: 82%; margin: 1rem auto; box-shadow: 0 2px 10px rgba(0,0,0,.18); transform: rotate(-2deg); }
+  .polaroid img { width: 100%; aspect-ratio: 4/5; object-fit: cover; display: block; }
+
+  /* itinerario */
+  .linea { position: relative; margin: 2rem auto 0; max-width: 300px; text-align: left; }
+  .linea::before { content: ""; position: absolute; left: 118px; top: 8px; bottom: 8px; width: 2px; background: var(--tinta); }
+  .hito { display: grid; grid-template-columns: 100px 1fr; gap: 36px; margin-bottom: 1.4rem; position: relative; }
+  .hito::before { content: "♥"; position: absolute; left: 111px; top: 0; font-size: .9rem; background: var(--fondo); }
+  .hito b { text-align: right; font-weight: 600; }
+
+  .boton { display: inline-block; margin-top: .8rem; padding: .5rem 1.5rem; border: 1px solid var(--tinta); border-radius: 99px; color: var(--tinta); text-decoration: none; font: inherit; background: none; cursor: pointer; }
+
+  /* ---------- Formulario y lista ---------- */
+  form { display: grid; gap: 1rem; text-align: left; background: #fff; border: 1px solid var(--linea); padding: 1.5rem; }
+  .campo { display: grid; gap: .25rem; }
+  label, legend { font-size: .95rem; color: var(--salvia-osc); }
+  input, select, textarea { font: inherit; font-size: 1rem; padding: .55rem .7rem; border: 1px solid var(--linea); background: #fbfcfb; color: var(--tinta); border-radius: 4px; }
+  fieldset { border: 0; padding: 0; display: flex; gap: .6rem; flex-wrap: wrap; }
+  .lado input { position: absolute; opacity: 0; }
+  .lado span { display: inline-block; padding: .45rem 1rem; border: 1px solid var(--linea); border-radius: 4px; cursor: pointer; color: var(--tinta); font-size: 1rem; }
+  .lado input:checked + .n1 { background: var(--novia); border-color: var(--novia); color: #fff; }
+  .lado input:checked + .n2 { background: var(--novio); border-color: var(--novio); color: #fff; }
+  .lado input:focus-visible + span { outline: 2px solid var(--tinta); outline-offset: 2px; }
+  .guardar { padding: .75rem; background: var(--salvia-osc); color: #fff; border: 0; font: inherit; cursor: pointer; border-radius: 4px; }
+  .error { color: #a3323f; font-size: .95rem; min-height: 1.2em; }
+
+  #lista { max-width: 960px; }
+  .resumen { display: flex; gap: .7rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .dato { flex: 1 1 130px; background: #fff; border: 1px solid var(--linea); padding: .6rem; }
+  .dato strong { display: block; font-size: 2rem; line-height: 1.1; }
+  .dato.novia { border-bottom: 4px solid var(--novia); }
+  .dato.novio { border-bottom: 4px solid var(--novio); }
+  .barra { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .barra button, .barra input { padding: .4rem .9rem; border: 1px solid var(--linea); background: #fff; font: inherit; font-size: 1rem; cursor: pointer; border-radius: 4px; }
+  .barra button.activo { background: var(--tinta); color: #fff; }
+  .barra input { flex: 1 1 160px; cursor: text; }
+  .tabla { overflow-x: auto; background: #fff; border: 1px solid var(--linea); }
+  table { width: 100%; border-collapse: collapse; min-width: 640px; text-align: left; font-size: 1rem; }
+  th, td { padding: .6rem .8rem; border-bottom: 1px solid var(--linea); }
+  th { color: var(--salvia-osc); font-weight: 600; }
+  .etiqueta { padding: .05rem .6rem; border-radius: 99px; font-size: .85rem; color: #fff; }
+  .etiqueta.novia { background: var(--novia); }
+  .etiqueta.novio { background: var(--novio); }
+  .borrar { background: none; border: 0; color: #a3323f; cursor: pointer; font: inherit; font-size: .95rem; }
+  .vacio { padding: 1.5rem; color: var(--salvia-osc); }
+  .acciones { margin-top: 1rem; display: flex; gap: .5rem; justify-content: center; flex-wrap: wrap; }
+  .acciones button { padding: .45rem 1rem; border: 1px solid var(--linea); background: #fff; font: inherit; font-size: 1rem; cursor: pointer; border-radius: 4px; }
+  footer { padding: 2rem; color: var(--salvia-osc); }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+
+<!-- Flor reutilizable -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="flor" viewBox="-30 -30 60 60">
+    <g fill="#fff" stroke="#e4e0d2" stroke-width="1">
+      <ellipse cx="0" cy="-14" rx="9" ry="14"/><ellipse cx="0" cy="-14" rx="9" ry="14" transform="rotate(72)"/>
+      <ellipse cx="0" cy="-14" rx="9" ry="14" transform="rotate(144)"/><ellipse cx="0" cy="-14" rx="9" ry="14" transform="rotate(216)"/>
+      <ellipse cx="0" cy="-14" rx="9" ry="14" transform="rotate(288)"/>
+    </g>
+    <circle r="6" fill="#efe7c8"/><circle r="2.5" fill="#d8cc9c"/>
+  </symbol>
+</svg>
+
+<!-- ============ PORTADA ============ -->
+<header class="portada section" id="portada">
+  <section>
+    <h1>Araceli &amp; Rodolfo</h1>
+    <p class="fecha">06 · 02 · 2027</p>
+
+    <button class="sobre" id="sobre" aria-label="Abrir la invitación">
+      <span class="s-fondo"></span>
+      <span class="s-foto"><img src="foto-pareja.jpg" alt="Araceli y Rodolfo abrazados"></span>
+      <span class="s-lado s-izq"></span><span class="s-lado s-der"></span><span class="s-base"></span>
+      <span class="s-tapa"></span>
+      <svg class="flores" viewBox="0 0 150 110">
+        <g fill="#fff" stroke="#e4e0d2"><circle cx="20" cy="40" r="3"/><circle cx="55" cy="22" r="2.5"/><circle cx="110" cy="52" r="3"/><circle cx="130" cy="74" r="2.5"/><circle cx="12" cy="76" r="2.5"/></g>
+        <use href="#flor" x="30" y="40" width="64" height="64"/><use href="#flor" x="76" y="52" width="50" height="50"/><use href="#flor" x="4" y="62" width="40" height="40"/>
+      </svg>
+    </button>
+    <p class="indicacion">Toca el sobre para abrir...</p>
+    <p class="pase" id="pase"></p>
+  </section>
+</header>
+
+<!-- ============ INVITACIÓN ============ -->
+<div id="invitacion">
+  <section>
+    <p class="cita">“El amor nos encontró, el destino nos unió y hoy queremos compartir contigo el día más especial de nuestras vidas.”</p>
+    <div class="monograma">A&amp;R</div>
+  </section>
+
+  <section>
+    <div class="reproductor">
+      <button id="play" aria-label="Reproducir canción">▶</button>
+      <span>Dale play para escuchar nuestra canción</span>
+    </div>
+    <audio id="cancion" src="musica.mp3" loop></audio>
+  </section>
+
+  <section>
+    <div class="papel">
+      <h3>Con la bendición de Dios y nuestros padres</h3>
+      <div class="dos">
+        <div><b>Padres de la novia</b>Rosa Maria Gonzalez<br>Rafael Mandujano</div>
+        <div><b>Padres del novio</b>Maria Inés<br>Rodolfo Santana</div>
+      </div>
+    </div>
+    <div class="papel">
+      <h3>Y nuestros padrinos</h3>
+      <div class="dos">
+        <div><b>Padrinos de anillos</b>Nombre y Apellido<br>Nombre y Apellido</div>
+        <div><b>Padrinos de ramo</b>Nombre y Apellido<br>Nombre y Apellido</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Prepárate</h2>
+    <p>Solo faltan…</p>
+    <div class="cuenta" role="timer" aria-live="off">
+      <div><span id="d">00</span><small>DÍAS</small></div>:
+      <div><span id="h">00</span><small>HORAS</small></div>:
+      <div><span id="m">00</span><small>MINUTOS</small></div>:
+      <div><span id="s">00</span><small>SEGUNDOS</small></div>
+    </div>
+    <p style="margin-top:1rem">Para nuestro gran día</p>
+    <div class="polaroid"><img src="foto-pareja.jpg" alt="Araceli y Rodolfo" style="object-position:50% 25%"></div>
+  </section>
+
+  <section>
+    <h2>Itinerario</h2>
+    <p>Parroquia de San Pedro Apóstol, Senguio</p>
+    <div class="linea">
+      <div class="hito"><b>10:30 h</b><span>Ceremonia</span></div>
+      <div class="hito"><b>12:00 h</b><span>Comida</span></div>
+      <div class="hito"><b>13:00 h</b><span>Pastel</span></div>
+      <div class="hito"><b>22:30 h</b><span>Fiesta</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Dress code</h2>
+    <div class="papel">
+      <h3>Formal</h3>
+      <p>Mujeres: vestido largo<br>Hombres: traje</p>
+      <p style="font-size:.95rem;margin-top:.5rem">Evitar colores blancos, rojos y parecidos</p>
+    </div>
+    <h2>Regalos</h2>
+    <div class="papel">
+      <p>Su compañía es lo más importante para nosotros, pero si desean hacernos un obsequio, lo recibiremos con mucho cariño.</p>
+      <a class="boton" href="#" target="_blank" rel="noopener">Mesa de regalos</a>
+    </div>
+  </section>
+
+  <section id="registro">
+    <h2>Asistencia</h2>
+    <p>Agradecemos confirmar tu asistencia antes del 15 de noviembre.</p>
+    <form id="formulario" novalidate style="margin-top:1rem">
+      <div class="campo"><label for="nombre">Nombre completo</label><input id="nombre" placeholder="Ej. María López"></div>
+      <fieldset>
+        <legend>¿De qué lado vienes?</legend>
+        <label class="lado"><input type="radio" name="lado" value="Novia"><span class="n1">Familia de la novia</span></label>
+        <label class="lado"><input type="radio" name="lado" value="Novio"><span class="n2">Familia del novio</span></label>
+      </fieldset>
+      <div class="campo"><label for="parentesco">Parentesco o relación</label>
+        <select id="parentesco"><option>Familiar</option><option>Amigo/a</option><option>Compañero/a de trabajo</option><option>Otro</option></select></div>
+      <div class="campo"><label for="acompanantes">Acompañantes</label><input id="acompanantes" type="number" min="0" max="10" value="0"></div>
+      <div class="campo"><label for="telefono">Teléfono</label><input id="telefono" type="tel" placeholder="55 1234 5678"></div>
+      <div class="campo"><label for="correo">Correo electrónico</label><input id="correo" type="email" placeholder="correo@ejemplo.com"></div>
+      <div class="campo"><label for="notas">Pon un comentario para los novios</label><textarea id="notas" rows="2"></textarea></div>
+      <p class="error" id="error" role="alert"></p>
+      <button class="guardar" type="submit">Confirmar asistencia</button>
+    </form>
+  </section>
+
+  <section id="lista">
+    <h2>Lista de invitados</h2>
+    <div class="resumen">
+      <div class="dato"><strong id="total">0</strong>Personas en total</div>
+      <div class="dato novia"><strong id="totalNovia">0</strong>Lado de la novia</div>
+      <div class="dato novio"><strong id="totalNovio">0</strong>Lado del novio</div>
+    </div>
+    <div class="barra">
+      <button data-filtro="Todos" class="activo">Todos</button>
+      <button data-filtro="Novia">Novia</button>
+      <button data-filtro="Novio">Novio</button>
+      <input id="buscar" type="search" placeholder="Buscar por nombre" aria-label="Buscar por nombre">
+    </div>
+    <div class="tabla">
+      <table>
+        <thead><tr><th>Nombre</th><th>Lado</th><th>Relación</th><th>Contacto</th><th>Personas</th><th>Notas</th><th></th></tr></thead>
+        <tbody id="cuerpo"></tbody>
+      </table>
+      <p class="vacio" id="vacio">Aún no hay invitados. Agrega el primero con el formulario.</p>
+    </div>
+    <div class="acciones">
+      <button id="exportar">Descargar lista (CSV)</button>
+      <button id="limpiar">Borrar toda la lista</button>
+    </div>
+  </section>
+
+  <footer><span style="font-family:'Pinyon Script',cursive;font-size:2rem">¡No faltes!</span></footer>
+</div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  const FECHA_BODA = new Date("2027-02-06T17:00:00");
+
+  
+
+  /* Abrir sobre */
+  function abrir() {
+    $("sobre").classList.add("abierto");
+    $("sobre").setAttribute("aria-expanded", "true");
+    setTimeout(() => {
+      $("invitacion").classList.add("visible");
+      $("invitacion").scrollIntoView({ behavior: "smooth" });
+    }, 1700);
+  }
+  $("sobre").addEventListener("click", abrir, { once: true });
+
+  /* Música */
+  $("play").addEventListener("click", () => {
+    const a = $("cancion");
+    if (a.paused) { a.play().catch(() => {}); $("play").textContent = "❚❚"; }
+    else { a.pause(); $("play").textContent = "▶"; }
+  });
+
+  /* Cuenta regresiva */
+  function contar() {
+    let t = Math.max(0, FECHA_BODA - new Date()) / 1000;
+    const p = (n) => String(Math.floor(n)).padStart(2, "0");
+    $("d").textContent = p(t / 86400); $("h").textContent = p((t % 86400) / 3600);
+    $("m").textContent = p((t % 3600) / 60); $("s").textContent = p(t % 60);
+  }
+  contar(); setInterval(contar, 1000);
+
+  /* ---------- Lista de invitados ---------- */
+  const CLAVE = "invitados-boda";
+  let invitados = [], filtro = "Todos";
+  try { invitados = JSON.parse(localStorage.getItem(CLAVE)) || []; } catch (e) {}
+  const guardar = () => { try { localStorage.setItem(CLAVE, JSON.stringify(invitados)); } catch (e) {} };
+  const esc = (t) => String(t ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  function dibujar() {
+    const q = $("buscar").value.trim().toLowerCase();
+    const vis = invitados.filter((i) => (filtro === "Todos" || i.lado === filtro) && i.nombre.toLowerCase().includes(q));
+    $("cuerpo").innerHTML = vis.map((i) => `<tr>
+      <td>${esc(i.nombre)}</td><td><span class="etiqueta ${i.lado.toLowerCase()}">${i.lado}</span></td>
+      <td>${esc(i.parentesco)}</td><td>${esc(i.telefono)}<br>${esc(i.correo)}</td>
+      <td>${1 + i.acompanantes}</td><td>${esc(i.notas)}</td>
+      <td><button class="borrar" data-id="${i.id}" aria-label="Eliminar a ${esc(i.nombre)}">Eliminar</button></td></tr>`).join("");
+    $("vacio").style.display = vis.length ? "none" : "block";
+    const n = (l) => invitados.filter((i) => !l || i.lado === l).reduce((s, i) => s + 1 + i.acompanantes, 0);
+    $("total").textContent = n(); $("totalNovia").textContent = n("Novia"); $("totalNovio").textContent = n("Novio");
+  }
+
+  $("formulario").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const nombre = $("nombre").value.trim(), lado = document.querySelector('input[name="lado"]:checked'), correo = $("correo").value.trim();
+    if (!nombre) return ($("error").textContent = "Escribe tu nombre.");
+    if (!lado) return ($("error").textContent = "Elige si eres de la familia de la novia o del novio.");
+    if (correo && !/^\S+@\S+\.\S+$/.test(correo)) return ($("error").textContent = "El correo no es válido. Revisa que tenga @ y dominio.");
+    invitados.push({ id: Date.now(), nombre, lado: lado.value, parentesco: $("parentesco").value,
+      acompanantes: Math.max(0, parseInt($("acompanantes").value) || 0), telefono: $("telefono").value.trim(), correo, notas: $("notas").value.trim() });
+    guardar(); $("error").textContent = ""; e.target.reset(); dibujar();
+  });
+
+  $("cuerpo").addEventListener("click", (e) => {
+    if (!e.target.dataset.id) return;
+    invitados = invitados.filter((i) => String(i.id) !== e.target.dataset.id); guardar(); dibujar();
+  });
+  document.querySelectorAll("[data-filtro]").forEach((b) => b.addEventListener("click", () => {
+    filtro = b.dataset.filtro;
+    document.querySelectorAll("[data-filtro]").forEach((x) => x.classList.toggle("activo", x === b)); dibujar();
+  }));
+  $("buscar").addEventListener("input", dibujar);
+  $("limpiar").addEventListener("click", () => { if (invitados.length && confirm("¿Borrar toda la lista de invitados?")) { invitados = []; guardar(); dibujar(); } });
+  $("exportar").addEventListener("click", () => {
+    const f = [["Nombre", "Lado", "Relación", "Acompañantes", "Teléfono", "Correo", "Notas"], ...invitados.map((i) => [i.nombre, i.lado, i.parentesco, i.acompanantes, i.telefono, i.correo, i.notas])];
+    const csv = "\uFEFF" + f.map((r) => r.map((c) => `"${String(c ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" })); a.download = "invitados-boda.csv"; a.click();
+  });
+  dibujar();
+</script>
+</body>
+</html>
